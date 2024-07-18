@@ -25,22 +25,35 @@ def ReceiveRequest(self, data):
         toSend.set("PacketData", "HU", str(server.personaID))
         toSend.set("PacketData", "HN", str(server.personaName))
 
-        toSend.set("PacketData", "I", server.ipAddr)
-        toSend.set("PacketData", "P", str(server.serverData.get("ServerData", "PORT")))  # Port
+        toSend.set("PacketData", "I", "86.87.139.235")
+        toSend.set("PacketData", "P", "3658")
+        toSend.set("PacketData", "N", "[XBOX360] IamLupo-Server")  # name of server in list
+        toSend.set("PacketData", "AP", "0")
+        toSend.set("PacketData", "MP", "24")
+        toSend.set("PacketData", "JP", "0")
+        toSend.set("PacketData", "PW", "0")
+        toSend.set("PacketData", "TYPE", "G")
+        toSend.set("PacketData", "J", "0")
 
-        toSend.set("PacketData", "N", str(server.serverData.get("ServerData", "NAME")))  # name of server in list
-        toSend.set("PacketData", "AP", str(server.serverData.get("ServerData", "ACTIVE-PLAYERS")))  # current number of players on server
-        toSend.set("PacketData", "MP", str(server.serverData.get("ServerData", "MAX-PLAYERS")))  # Maximum players on server
+        toSend.set("PacketData", "V", "1.0")
+        toSend.set("PacketData", "QP", "0")
+
+        #toSend.set("PacketData", "I", server.ipAddr)
+        #toSend.set("PacketData", "P", str(server.serverData.get("ServerData", "PORT")))  # Port
+        #toSend.set("PacketData", "N", str(server.serverData.get("ServerData", "NAME")))  # name of server in list
+        #toSend.set("PacketData", "AP", str(server.serverData.get("ServerData", "ACTIVE-PLAYERS")))  # current number of players on server
+        #toSend.set("PacketData", "MP", str(server.serverData.get("ServerData", "MAX-PLAYERS")))  # Maximum players on server
         toSend.set("PacketData", "QP", str(server.serverData.get("ServerData", "B-U-length")))  # Something with the queue...lets just set this equal to B-U-length
-        toSend.set("PacketData", "JP", str(server.serverData.get("ServerData", "JOINING-PLAYERS")))   # Players that are joining the server right now?
-        toSend.set("PacketData", "PL", "PC")  # Platform - PC / XENON / PS3
+        #toSend.set("PacketData", "JP", str(server.serverData.get("ServerData", "JOINING-PLAYERS")))   # Players that are joining the server right now?
+        #toSend.set("PacketData", "PL", "PC")  # Platform - PC / XENON / PS3
 
         # Constants
-        toSend.set("PacketData", "PW", "0")  # ??? - its certainly not something like "hasPassword"
-        toSend.set("PacketData", "TYPE", str(server.serverData.get("ServerData", "TYPE")))  # what type?? constant value - "G"
-        toSend.set("PacketData", "J", str(server.serverData.get("ServerData", "JOIN")))  # ??? constant value - "O"
+        #toSend.set("PacketData", "PW", "0")  # ??? - its certainly not something like "hasPassword"
+        #toSend.set("PacketData", "TYPE", str(server.serverData.get("ServerData", "TYPE")))  # what type?? constant value - "G"
+        #toSend.set("PacketData", "J", str(server.serverData.get("ServerData", "JOIN")))  # ??? constant value - "O"
 
         # Userdata
+        """
         toSend.set("PacketData", "B-U-matchmaking_state", str(server.serverData.get("ServerData", "B-U-matchmaking_state")))
         toSend.set("PacketData", "B-U-team_play", str(server.serverData.get("ServerData", "B-U-team_play")))
         toSend.set("PacketData", "B-U-car_tier", str(server.serverData.get("ServerData", "B-U-car_tier")))
@@ -64,6 +77,7 @@ def ReceiveRequest(self, data):
         toSend.set("PacketData", "B-U-race_type_circuit", str(server.serverData.get("ServerData", "B-U-race_type_circuit")))
         toSend.set("PacketData", "B-U-race_type_knockout", str(server.serverData.get("ServerData", "B-U-race_type_knockout")))
         toSend.set("PacketData", "B-U-length", str(server.serverData.get("ServerData", "B-U-length")))  # players in queue or maximum queue length? (sometimes smaller than QP (-1?))
+        """
         Packet(toSend).send(self, "GDAT", 0x00000000, 0)
 
         toSend = Packet().create()

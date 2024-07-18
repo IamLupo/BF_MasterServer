@@ -219,6 +219,126 @@ def HandleNuLogin(self, data):
         self.logger_err.new_message("[Persona] User " + self.CONNOBJ.name + " wanted to login as " + name + " but this persona cannot be found!", 1)
     Packet(toSend).send(self, "acct", 0x80000000, self.CONNOBJ.plasmaPacketID)
 
+def HandleXBL360Login(self, data):
+    """ User is logging in with email and password """
+
+    toSend = Packet().create()
+    toSend.set("PacketData", "TXN", "HandleXBL360Login")
+
+    name = data.get('PacketData', "xuid")
+    password = data.get('PacketData', "macAddr")
+
+    loginData = {'UserID': 1337, 'SessionID': "Loool"}
+
+    if loginData['UserID'] > 0:  # Got UserID - Login Successful
+        self.CONNOBJ.accountSessionKey = loginData['SessionID']
+        self.CONNOBJ.userID = loginData['UserID']
+        self.CONNOBJ.name = name
+        #self.CONNOBJ.personaName = name
+        useridx = CheckUserAlreadyLoggedIn((int(loginData['UserID'])))
+        global globalUserCount
+        global globalUsers
+        
+        if useridx != 0:
+            useridx.sessionKey = loginData['SessionID']
+        else:
+		    globalUsers.append(ServerUser())
+		    globalUsers[globalUserCount].Username = name
+		    globalUsers[globalUserCount].UserID = int(loginData['UserID'])
+		    globalUsers[globalUserCount].sessionKey = loginData['SessionID']
+		    globalUserCount += 1
+            
+       # print("Session key is:" +globalUsers[0].sessionKey)
+        toSend.set("PacketData", "lkey", loginData['SessionID'])
+        toSend.set("PacketData", "name", name)
+        toSend.set("PacketData", "profileId", str(loginData['UserID']))
+        toSend.set("PacketData", "userId", str(loginData['UserID']))
+
+        self.logger.new_message("[Login] User " + name + " logged in successfully!", 1)
+    elif loginData['UserID'] == 0:  # The password the user specified is incorrect
+        toSend.set("PacketData", "localizedMessage", "The password the user specified is incorrect")
+        toSend.set("PacketData", "errorContainer.[]", "0")
+        toSend.set("PacketData", "errorCode", "122")
+
+        self.logger_err.new_message("[Login] User " + name + " specified incorrect password!", 1)
+    else:  # User not found
+        toSend.set("PacketData", "localizedMessage", "The user was not found")
+        toSend.set("PacketData", "errorContainer.[]", "0")
+        toSend.set("PacketData", "errorCode", "101")
+
+        self.logger_err.new_message("[Login] User " + name + " does not exist", 1)
+
+    personaData = db.loginPersona(self.CONNOBJ.userID, name)
+    if personaData is not None:
+        self.CONNOBJ.personaID = personaData['personaId']
+        self.CONNOBJ.personaSessionKey = personaData['lkey']
+        self.CONNOBJ.personaName = name
+
+        self.logger.new_message("[Persona] User " + self.CONNOBJ.name + " just logged as " + name, 1)
+    else:
+        self.logger_err.new_message("[Persona] User " + self.CONNOBJ.name + " wanted to login as " + name + " but this persona cannot be found!", 1)
+    Packet(toSend).send(self, "acct", 0x80000000, self.CONNOBJ.plasmaPacketID)
+
+def HandleNuXBL360Login(self, data):
+    """ User is logging in with email and password """
+
+    toSend = Packet().create()
+    toSend.set("PacketData", "TXN", "NuXBL360Login")
+
+    name = data.get('PacketData', "xuid")
+    password = data.get('PacketData', "macAddr")
+
+    loginData = {'UserID': 1337, 'SessionID': "Loool"}
+
+    if loginData['UserID'] > 0:  # Got UserID - Login Successful
+        self.CONNOBJ.accountSessionKey = loginData['SessionID']
+        self.CONNOBJ.userID = loginData['UserID']
+        self.CONNOBJ.name = name
+        #self.CONNOBJ.personaName = name
+        useridx = CheckUserAlreadyLoggedIn((int(loginData['UserID'])))
+        global globalUserCount
+        global globalUsers
+        
+        if useridx != 0:
+            useridx.sessionKey = loginData['SessionID']
+        else:
+		    globalUsers.append(ServerUser())
+		    globalUsers[globalUserCount].Username = name
+		    globalUsers[globalUserCount].UserID = int(loginData['UserID'])
+		    globalUsers[globalUserCount].sessionKey = loginData['SessionID']
+		    globalUserCount += 1
+            
+       # print("Session key is:" +globalUsers[0].sessionKey)
+        toSend.set("PacketData", "lkey", loginData['SessionID'])
+        toSend.set("PacketData", "name", name)
+        toSend.set("PacketData", "profileId", str(loginData['UserID']))
+        toSend.set("PacketData", "userId", str(loginData['UserID']))
+
+        self.logger.new_message("[Login] User " + name + " logged in successfully!", 1)
+    elif loginData['UserID'] == 0:  # The password the user specified is incorrect
+        toSend.set("PacketData", "localizedMessage", "The password the user specified is incorrect")
+        toSend.set("PacketData", "errorContainer.[]", "0")
+        toSend.set("PacketData", "errorCode", "122")
+
+        self.logger_err.new_message("[Login] User " + name + " specified incorrect password!", 1)
+    else:  # User not found
+        toSend.set("PacketData", "localizedMessage", "The user was not found")
+        toSend.set("PacketData", "errorContainer.[]", "0")
+        toSend.set("PacketData", "errorCode", "101")
+
+        self.logger_err.new_message("[Login] User " + name + " does not exist", 1)
+
+    personaData = db.loginPersona(self.CONNOBJ.userID, name)
+    if personaData is not None:
+        self.CONNOBJ.personaID = personaData['personaId']
+        self.CONNOBJ.personaSessionKey = personaData['lkey']
+        self.CONNOBJ.personaName = name
+
+        self.logger.new_message("[Persona] User " + self.CONNOBJ.name + " just logged as " + name, 1)
+    else:
+        self.logger_err.new_message("[Persona] User " + self.CONNOBJ.name + " wanted to login as " + name + " but this persona cannot be found!", 1)
+    Packet(toSend).send(self, "acct", 0x80000000, self.CONNOBJ.plasmaPacketID)
+
 
 def HandleNuGetPersonas(self):
     """ Get personas associated with account """
@@ -451,6 +571,10 @@ def ReceivePacket(self, data, txn):
         HandleNuAddAccount(self, data)
     elif txn == 'Login':
         HandleNuLogin(self, data)
+    elif txn == 'XBL360Login':
+        HandleXBL360Login(self, data)
+    elif txn == 'NuXBL360Login':
+        HandleNuXBL360Login(self, data)
     elif txn == 'NuGetPersonas':
         HandleNuGetPersonas(self)
     elif txn == 'NuLoginPersona':

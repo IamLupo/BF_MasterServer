@@ -47,7 +47,7 @@ def HandleStart(self, data): # TODO - Add PlayNow matchmaking handling here... C
     toSend = Packet().create()
     toSend.set("PacketData", "TXN", "Start")
     toSend.set("PacketData", "id.id", str(globalServerStartID))
-    toSend.set("PacketData", "id.partition", "/eagames/NFS-2007")
+    toSend.set("PacketData", "id.partition", "/XBL2/BFMC-CONSOLE-2006")
     Packet(toSend).send(self, "pnow", 0x80000000, self.CONNOBJ.plasmaPacketID)
     
     # start Status packet here
@@ -62,7 +62,7 @@ def HandleStart(self, data): # TODO - Add PlayNow matchmaking handling here... C
     toSend.set("PacketData", "props.{games}.0.lid", "1")   # apparently BFBC2 server supports only 1 lobby?
     toSend.set("PacketData", "props.{resultType}", "JOIN") # resultType can also be NOSERVER if none are found
     toSend.set("PacketData", "id.id", str(globalServerStartID))
-    toSend.set("PacketData", "id.partition", "/eagames/NFS-2007")
+    toSend.set("PacketData", "id.partition", "/XBL2/BFMC-CONSOLE-2006")
     
     # setup host client / server
     self.CONNOBJ.serverData = ConfigParser()
@@ -104,13 +104,22 @@ def HandleStart(self, data): # TODO - Add PlayNow matchmaking handling here... C
     self.CONNOBJ.serverData.set("ServerData", "B-U-help_type", "0")
 
     Packet(toSend).send(self, "pnow", 0x80000000, 0)
-    
+
+def HandleCancel(self):
+    toSend = Packet().create()
+    toSend.set("PacketData", "TXN", "Cancel")
+
+    Packet(toSend).send(self, "pnow", 0x80000000, 0)
+
 
 def ReceivePacket(self, data, txn):
     if txn == 'Start':
         HandleStart(self, data)
     elif txn == 'Status':
         HandleStatus(self)
+    elif txn == 'Cancel':
+        HandleCancel(self)
+    
    # elif txn == 'Ping':
    #     HandlePing(self)
    # elif txn == 'Goodbye':

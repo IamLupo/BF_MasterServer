@@ -9,10 +9,30 @@ def ReceiveRequest(self, data):
     lid = data.get("PacketData", "LID")
     gid = data.get("PacketData", "GID")
     
+    ticket = GenerateRandomString(10)
+
     toSendEGAM = Packet().create()
     toSendEGAM.set("PacketData", "TID", str(data.get("PacketData", "TID")))
     toSendEGAM.set("PacketData", "LID", str(lid))
     toSendEGAM.set("PacketData", "GID", str(gid))
+    Packet(toSendEGAM).send(self, "EGAM", 0x00000000, 0)
+
+    toSend = Packet().create()
+    #toSend.set("PacketData", "PL", "")
+    toSend.set("PacketData", "TICKET", ticket)
+    toSend.set("PacketData", "PID", "1")
+
+    toSend.set("PacketData", "I", "10.10.10.113")
+    toSend.set("PacketData", "P", "3658")  # Port
+
+    toSend.set("PacketData", "HUID", "0")
+    toSend.set("PacketData", "EKEY", "VheUv4/XQSxSumZDAJ4ueg%3d%3d")  # this must be the same key as the one we have on the server? keep it constant in both connections for now (we could integrate it in the database...)
+    toSend.set("PacketData", "INT-PORT", "3658")  # Port
+    toSend.set("PacketData", "INT-IP", "10.10.10.113")  # internal ip where the SERVER is hosted
+    toSend.set("PacketData", "UGID", "775a990f-1cef-4230-8e75-63de83b18396")
+    toSend.set("PacketData", "LID", str(lid))
+    toSend.set("PacketData", "GID", str(gid))
+    Packet(toSend).send(self, "EGEG", 0x00000000, 0)
 
     server = None
     for tempServer in Servers:

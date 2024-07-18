@@ -6,16 +6,10 @@ from Utilities.Packet import Packet
 def ReceiveRequest(self, data):
     toSend = Packet().create()
 
-    lkey = data.get("PacketData", "LKEY")
+    tid = data.get("PacketData", "TID")
+    
+    toSend.set("PacketData", "NAME", "6004597505439282620")
+    toSend.set("PacketData", "TID", str(tid))
+    #toSend.set("PacketData", "NAME", self.CONNOBJ.personaName)
 
-    for client in Clients:
-        if client.accountSessionKey == lkey:
-            self.CONNOBJ = client
-
-    if self.CONNOBJ is None:
-        self.transport.loseConnection()
-    else:
-        toSend.set("PacketData", "TID", str(data.get("PacketData", "TID")))
-        toSend.set("PacketData", "NAME", self.CONNOBJ.personaName)
-
-        Packet(toSend).send(self, "USER", 0x00000000, 0)
+    Packet(toSend).send(self, "USER", 0x00000000, 0)

@@ -24,9 +24,24 @@ def HandleGetStats(self, data):
 
     Packet(toSend).send(self, "rank", 0x80000000, self.CONNOBJ.plasmaPacketID)
 
+def HandleGetTopNAndStats(self, data):
+    toSend = Packet().create()
+    toSend.set("PacketData", "TXN", "GetTopNAndStats")
+
+    Packet(toSend).send(self, "rank", 0x80000000, self.CONNOBJ.plasmaPacketID)
+
+def HandleGetRankedStats(self, data):
+    toSend = Packet().create()
+    toSend.set("PacketData", "TXN", "GetRankedStats")
+
+    Packet(toSend).send(self, "rank", 0x80000000, self.CONNOBJ.plasmaPacketID)
 
 def ReceivePacket(self, data, txn):
     if txn == 'GetStats':
         HandleGetStats(self, data)
+    elif txn == 'GetTopNAndStats':
+        HandleGetTopNAndStats(self, data)
+    elif txn == 'GetRankedStats':
+        HandleGetRankedStats(self, data)
     else:
         self.logger_err.new_message("[" + self.ip + ":" + str(self.port) + ']<-- Got unknown rank message (' + txn + ")", 2)
